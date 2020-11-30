@@ -37,4 +37,4 @@ MacOS, Linux:
 python3 jumpvis.py Beispiel_3.txt Beispiel_3.gpx >Beispiel_3.czml
 
 Open https://cesium.com/cesiumjs/cesium-viewer/ in Chrome
-drag and drop Beispiel_3.czml onto the browser window
+drag and drop Beispiel_3.czml onto the browser window or try this link:  https://cesium.com/cesiumjs/cesium-viewer/?source=https://static.mah.priv.at/cors/Beispiel_3.czml
