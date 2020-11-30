@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="Wikipedia">
+  <metadata>
+    <name>Dateiname</name>
+    <desc>Validiertes GPX-Beispiel ohne Sonderzeichen</desc>
+    <author>
+      <name>Heidi Schmid</name>
+    </author>
+  </metadata>
+  <wpt lat="47.0611826163901" lon="15.1628023691719">
+    <ele>4000</ele>
+    <time>2020-11-30T::00Z</time>
+    <name>x-15 sec</name>
+    <sym>WP</sym>
+  </wpt>
+  <wpt lat="47.0293469500447" lon="15.1798069010275">
+    <ele>4000</ele>
+    <time>2020-11-30T::00Z</time>
+    <name>x-1 min</name>
+    <sym>WP</sym>
+  </wpt>
+  <wpt lat="46.9444518397904" lon="15.2251027554732">
+    <ele>4000</ele>
+    <time>2020-11-30T::00Z</time>
+    <name>x-3 min</name>
+    <sym>WP</sym>
+  </wpt>
+  <wpt lat="47.0873586087185" lon="15.1488132558242">
+    <ele>4000</ele>
+    <time>2020-11-30T::00Z</time>
+    <name>Ende Absetzen</name>
+    <sym>WP</sym>
+  </wpt>
+  <wpt lat="47.0717945051719" lon="15.1571319351276">
+    <ele>4000</ele>
+    <time>2020-11-30T::00Z</time>
+    <name>HARP</name>
+    <sym>WP</sym>
+  </wpt>
+  <wpt lat="47.0795765569452" lon="15.1529728991963">
+    <ele>4000</ele>
+    <time>2020-11-30T::00Z</time>
+    <name>Absetzpunkt</name>
+    <sym>WP</sym>
+  </wpt>
+  <wpt lat="47.1026716552433" lon="15.2189647240443">
+    <ele>496</ele>
+    <time>2020-11-30T::00Z</time>
+    <name>Landeplatz</name>
+    <sym>WP</sym>
+  </wpt>
+  <rte>
+    <name>Absetzvorgang</name>
+    <desc>Verbindet die wichtigen Punkte beim Absetzen</desc>
+    <rtept lat="47.0717945051719" lon="15.1571319351276">
+    </rtept>
+    <rtept lat="47.0873586087185" lon="15.1488132558242">
+    </rtept>
+    <rtept lat="47.0795765569452" lon="15.1529728991963">
+    </rtept>
+    <rtept lat="47.086481503627" lon="15.152191775276">
+    </rtept>
+    <rtept lat="47.0867989787921" lon="15.1542263022321">
+    </rtept>
+    <rtept lat="47.1026716552433" lon="15.2189647240443">
+    </rtept>
+  </rte>
+</gpx>
