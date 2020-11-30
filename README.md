@@ -12,15 +12,29 @@ run git bash
 
 commands:
 
+pip3 install gpxpy
+
+git clone https://github.com/poliastro/czml3.git
+
+cd czml3
+
+python setup.py install
+
+cd ..
+
 git clone https://github.com/mhaberler/jumpvis
 
 cd jumpvis
 
-pip3 install gpxpy czml3
 
-now run:
 
-python3 jumpvis.py Beispiel_1.txt Beispiel_1.gpx > Beispiel_1.czml
+Windows:
+
+python.exe jumpvis.py Beispiel_3.txt Beispiel_3.gpx > Beispiel_3.czml
+
+MacOS, Linux:
+
+python3 jumpvis.py Beispiel_3.txt Beispiel_3.gpx >Beispiel_3.czml
 
 Open https://cesium.com/cesiumjs/cesium-viewer/ in Chrome
-drag and drop Beispiel_1.czml onto the browser window
+drag and drop Beispiel_3.czml onto the browser window
