@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="gpx.py -- https://github.com/tkrajina/gpxpy">
+  <metadata>
+    <name>Dateiname</name>
+    <desc>Validiertes GPX-Beispiel ohne Sonderzeichen</desc>
+    <author>
+      <name>Heidi Schmid</name>
+    </author>
+  </metadata>
+  <wpt lat="47.0293469500447" lon="15.2251027554732">
+    <time>2020-07-12T08:02:00Z</time>
+    <name>x-1 min</name>
+    <sym>WP</sym>
+  </wpt>
+  <wpt lat="46.9444518397904" lon="15.1798069010275">
+    <time>2020-07-12T08:00:00Z</time>
+    <name>x-3 min</name>
+    <sym>WP</sym>
+  </wpt>
+  <wpt lat="47.0611826163901" lon="15.1628023691719">
+    <time>2020-07-12T08:02:00Z</time>
+    <name>x-15 sec</name>
+    <sym>WP</sym>
+  </wpt>
+  <rte>
+    <name>Absetzvorgang</name>
+    <desc>Verbindet die wichtigen Punkte beim Absetzen</desc>
+    <rtept lat="47.0717945051719" lon="15.1571319351276">
+      <time>2020-07-12T08:02:00Z</time>
+      <name>Absetzpunk</name>
+    </rtept>
+    <rtept lat="47.0873586087185" lon="15.1488132558242">
+      <time>2020-07-12T08:03:00Z</time>
+      <name>Ende Freifall</name>
+    </rtept>
+  </rte>
+</gpx>
