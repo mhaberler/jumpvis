@@ -265,19 +265,20 @@ def genczml(starttime, lines, gpx, vorlauf=720, nachlauf=720):
                          scale=1.0,
                          heightReference=HeightReferences.NONE,
                          minimumPixelSize=64)
-    flight_viewfrom = ViewFrom(cartesian=Cartesian3Value(values=[0, -200, 100]))
-    flight = Packet(id="track%d" % next(_serial),
+    #jump_viewfrom = ViewFrom(cartesian=Cartesian3Value(values=[0, -200, 100]))
+    jump_viewfrom = ViewFrom(reference="#track0.position")
+    jump = Packet(id="track%d" % next(_serial),
                     description="der Sprung",
                     name="Karli",
                     position=jump_traj,
                     label=lb,
                     path=jump_path,
                     model=jump_vehicle,
-                    viewFrom=flight_viewfrom,
+                    viewFrom=jump_viewfrom,
                     availability=TimeInterval(
                        start=starttime,
                        end=starttime + sprungdauer))
-    packets.append(flight)
+    packets.append(jump)
     simple = Document(packets)
     print(simple.dumps(indent=4))
 
