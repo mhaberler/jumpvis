@@ -233,6 +233,9 @@
         "name": "flugfpfad",
         "description": "der flug",
         "availability": "2020-07-12T05:56:50Z/2020-07-12T06:12:00Z",
+        "viewFrom": {
+          "cartesian": [0, -1000, 100]
+        },
         "position": {
             "epoch": "2020-07-12T05:56:50Z",
             "cartographicDegrees": [
@@ -332,6 +335,9 @@
         "name": "Karli",
         "description": "der Sprung",
         "availability": "2020-07-12T06:00:00Z/2020-07-12T06:08:08Z",
+        "viewFrom": {
+          "cartesian": [0, -200, 100]
+        },
         "position": {
             "epoch": "2020-07-12T06:00:00Z",
             "cartographicDegrees": [
