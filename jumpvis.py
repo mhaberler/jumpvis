@@ -18,6 +18,7 @@ from czml3.properties import (
     Point,
     Material,
     Model,
+    ViewFrom,
     Orientation,
     Path,
     Position,
@@ -28,7 +29,15 @@ from czml3.properties import (
     PolylineDashMaterial,
     PolylineMaterial
 )
-from czml3.types import IntervalValue, Sequence, TimeInterval, format_datetime_like
+from czml3.types import (
+    IntervalValue,
+    Sequence,
+    TimeInterval,
+    format_datetime_like,
+    Cartesian3Value,
+    CartographicDegreesListValue,
+    CartographicRadiansListValue
+)
 from czml3.enums import (
     HeightReferences,
     HorizontalOrigins,
@@ -214,6 +223,7 @@ def genczml(starttime, lines, gpx, vorlauf=720, nachlauf=720):
                     orientation=flight_orientation,
                     path=flight_path,
                     model=flight_vehicle,
+                    viewFrom=ViewFrom(cartesian=Cartesian3Value(values=[-1000, 0, 300])),
                     availability=TimeInterval(start=vorlauf_zeit,
                                               end=nachlauf_zeit))
         gpx_packets.append(p2)
@@ -255,6 +265,7 @@ def genczml(starttime, lines, gpx, vorlauf=720, nachlauf=720):
                          scale=1.0,
                          heightReference=HeightReferences.NONE,
                          minimumPixelSize=64)
+    flight_viewfrom = ViewFrom(cartesian=Cartesian3Value(values=[0, -200, 100]))
     flight = Packet(id="track%d" % next(_serial),
                     description="der Sprung",
                     name="Karli",
@@ -262,6 +273,7 @@ def genczml(starttime, lines, gpx, vorlauf=720, nachlauf=720):
                     label=lb,
                     path=jump_path,
                     model=jump_vehicle,
+                    viewFrom=flight_viewfrom,
                     availability=TimeInterval(
                        start=starttime,
                        end=starttime + sprungdauer))
