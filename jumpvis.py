@@ -283,7 +283,8 @@ def genczml(starttime, lines, gpx, meteo, vorlauf=720, nachlauf=720):
     packets.append(jump)
 
     if meteo:
-        packets.extend(meteo.czml_wind_vectors())
+        for l in range(30,65):
+            packets.extend(meteo.czml_wind_vectors(l))
 
     simple = Document(packets)
     print(simple.dumps(indent=4))
