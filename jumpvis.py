@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
+import _version
 import csv
 import gpxpy
 from gpxpy.geo import get_course, distance, Location, LocationDelta
-from datetime import date
-from datetime import time
 from datetime import datetime
 from datetime import timedelta
 import logging
@@ -11,7 +10,7 @@ import logging
 from czml3 import Document, Packet, Preamble
 
 from czml3.properties import (
-    Billboard,
+#    Billboard,
     Clock,
     Color,
     Label,
@@ -26,25 +25,25 @@ from czml3.properties import (
     Polyline,
     SolidColorMaterial,
     PolylineOutlineMaterial,
-    PolylineDashMaterial,
+#    PolylineDashMaterial,
     PolylineMaterial
 )
 from czml3.types import (
     IntervalValue,
-    Sequence,
+#    Sequence,
     TimeInterval,
-    format_datetime_like,
+#    format_datetime_like,
     Cartesian3Value,
-    CartographicDegreesListValue,
-    CartographicRadiansListValue
+#    CartographicDegreesListValue,
+#    CartographicRadiansListValue
 )
 from czml3.enums import (
     HeightReferences,
-    HorizontalOrigins,
-    InterpolationAlgorithms,
-    LabelStyles,
-    ReferenceFrames,
-    VerticalOrigins,
+#    HorizontalOrigins,
+#    InterpolationAlgorithms,
+#    LabelStyles,
+#    ReferenceFrames,
+#    VerticalOrigins,
 )
 import argparse
 import sys
@@ -121,7 +120,7 @@ def genczml(starttime, lines, gpx, meteo, vorlauf=720, nachlauf=720):
         gelb = Color(rgba=(251, 227, 89, 255))
         lila = Color(rgba=(229, 80, 229, 255))
         schwarz = Color(rgba=(0, 0, 0, 255))
-        weiss = Color(rgba=(255, 255, 255, 255))
+        #weiss = Color(rgba=(255, 255, 255, 255))
 
         wpcolors = {
             'x-3 min': lila,
@@ -132,8 +131,8 @@ def genczml(starttime, lines, gpx, meteo, vorlauf=720, nachlauf=720):
             'Ende Absetzen': rot,
             'Landeplatz': gelb
         }
-        sequence = ['x-3min', 'x-1min', 'x-15',
-                    'HARP', 'Absetzpunkt', 'Ende Absetzen']
+        # sequence = ['x-3min', 'x-1min', 'x-15',
+        #             'HARP', 'Absetzpunkt', 'Ende Absetzen']
         # waypoints einfärbeln
         wps = dict()
         for w in gpx.waypoints:
@@ -283,7 +282,7 @@ def genczml(starttime, lines, gpx, meteo, vorlauf=720, nachlauf=720):
     packets.append(jump)
 
     if meteo:
-        for l in range(30,65):
+        for l in range(30, 65):
             packets.extend(meteo.czml_wind_vectors(l))
 
     simple = Document(packets)
@@ -335,6 +334,7 @@ def main():
             meteo,
             vorlauf=190,
             nachlauf=720)
+
 
 if __name__ == "__main__":
     main()

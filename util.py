@@ -1,5 +1,3 @@
-import gpxpy
-
 
 def get_bounds(points):
     """
