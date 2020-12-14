@@ -51,7 +51,7 @@ import sys
 from itertools import count
 
 import util
-import windfield
+from meteo import Meteo
 
 para = "https://static.mah.priv.at/cors/paraglider.glb"
 plane = "https://static.mah.priv.at/cors/Cesium_Air.glb"
@@ -62,7 +62,7 @@ delta_h = 112  # unerklaerlicher, aber notwendiger fudge-Faktor
 _serial = count(0)
 
 
-def genczml(starttime, lines, gpx, vorlauf=720, nachlauf=720):
+def genczml(starttime, lines, gpx, meteo, vorlauf=720, nachlauf=720):
     lb = Label(text="Fallschirmspringer",
                show=True,
                scale=0.5,
@@ -221,7 +221,8 @@ def genczml(starttime, lines, gpx, vorlauf=720, nachlauf=720):
                     orientation=flight_orientation,
                     path=flight_path,
                     model=flight_vehicle,
-                    viewFrom=ViewFrom(cartesian=Cartesian3Value(values=[-1000, 0, 300])),
+                    viewFrom=ViewFrom(cartesian=Cartesian3Value(
+                        values=[-1000, 0, 300])),
                     availability=TimeInterval(start=vorlauf_zeit,
                                               end=nachlauf_zeit))
         gpx_packets.append(p2)
@@ -268,18 +269,22 @@ def genczml(starttime, lines, gpx, vorlauf=720, nachlauf=720):
     jump_orientation = Orientation(velocityReference="#position")
 
     jump = Packet(id="track%d" % next(_serial),
-                    description="der Sprung",
-                    name="Karli",
-                    position=jump_traj,
-                    label=lb,
-                    path=jump_path,
-                    model=jump_vehicle,
-                    viewFrom=jump_viewfrom,
-            #        orientation=jump_orientation,
-                    availability=TimeInterval(
-                       start=starttime,
-                       end=starttime + sprungdauer))
+                  description="der Sprung",
+                  name="Karli",
+                  position=jump_traj,
+                  label=lb,
+                  path=jump_path,
+                  model=jump_vehicle,
+                  viewFrom=jump_viewfrom,
+                  #        orientation=jump_orientation,
+                  availability=TimeInterval(
+        start=starttime,
+        end=starttime + sprungdauer))
     packets.append(jump)
+
+    if meteo:
+        meteo.czml_wind_vectors()
+    
     simple = Document(packets)
     print(simple.dumps(indent=4))
 
@@ -287,25 +292,21 @@ def genczml(starttime, lines, gpx, vorlauf=720, nachlauf=720):
 def main():
     parser = argparse.ArgumentParser(usage='%(prog)s  [-d] [file ...]',
                                      description='generate czml3 from a Heidi txt file' +
-                                     'optionally a gpx file')
+                                     'optionally a gpx file and a netcdf windfield file')
     parser.add_argument('-d', '--debug', action='store_true',
                         help='show detailed logging')
     parser.add_argument('-n', '--netcdf', type=str,
-                help='netCDF file containing windfield data')
-
+                        help='netCDF file containing meteo data')
     parser.add_argument('-g', '--gpx', type=str,
-                help='GPX file containing essential markers')
-
+                        help='GPX file containing essential markers')
     args, files = parser.parse_known_args()
 
     global debug
     debug = args.debug
-
     logging_level = logging.DEBUG if debug else logging.INFO
-    logging.basicConfig(stream=sys.stderr, level=logging_level,
-format='%(filename)s:%(lineno)d:%(levelname)s %(message)s',
-
-                        )
+    logging.basicConfig(stream=sys.stderr,
+                        level=logging_level,
+                        format='%(filename)s:%(lineno)d:%(levelname)s %(message)s')
     logging.debug(args)
 
     with open(files[0], 'r') as csv_file:
@@ -315,15 +316,24 @@ format='%(filename)s:%(lineno)d:%(levelname)s %(message)s',
             lines.append(row)
 
     gpx = None
+    bounding_box = {}
     if args.gpx:
         with open(args.gpx, 'r') as gpx_file:
             gpx = gpxpy.parse(gpx_file)
-        bounds = util.get_bounds(gpx.waypoints)
-        logging.debug("gpx bbox: %s", bounds)
+        bounding_box = util.get_bounds(gpx.waypoints)
+        logging.debug("gpx bbox: %s", bounding_box)
+
+    meteo = None
+    if args.netcdf:
+        meteo = Meteo(netcdf=args.netcdf, bbox=bounding_box)
 
     absprungzeitpunkt = datetime(2020, 7, 12, hour=8)
-    genczml(absprungzeitpunkt, lines, gpx, vorlauf=190, nachlauf=720)
-
+    genczml(absprungzeitpunkt,
+            lines,
+            gpx,
+            meteo,
+            vorlauf=190,
+            nachlauf=720)
 
 if __name__ == "__main__":
     main()
