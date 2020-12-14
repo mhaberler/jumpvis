@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import csv
 import gpxpy
 from gpxpy.geo import get_course, distance, Location, LocationDelta
@@ -7,6 +6,7 @@ from datetime import date
 from datetime import time
 from datetime import datetime
 from datetime import timedelta
+import logging
 
 from czml3 import Document, Packet, Preamble
 
@@ -50,18 +50,16 @@ import argparse
 import sys
 from itertools import count
 
+import util
+import windfield
+
 para = "https://static.mah.priv.at/cors/paraglider.glb"
 plane = "https://static.mah.priv.at/cors/Cesium_Air.glb"
 debug = False
 mile = 1.852  # km
-delta_h = 112  # unerklärlicher, aber notwendiger fudge-Faktor
+delta_h = 112  # unerklaerlicher, aber notwendiger fudge-Faktor
 
 _serial = count(0)
-
-
-def dprint(*args, **kwargs):
-    if debug:
-        print(*args, file=sys.stderr, **kwargs)
 
 
 def genczml(starttime, lines, gpx, vorlauf=720, nachlauf=720):
@@ -73,14 +71,14 @@ def genczml(starttime, lines, gpx, vorlauf=720, nachlauf=720):
     plist = []
     last = lines[-1]
     secs = float(last['Zeit(s)'])
-    dprint("sprungdauer: ", secs)
+    logging.debug("sprungdauer=%f: ", secs)
 
     first = lines[0]
     groundspeed = float(first['Groundspeed (kt)']) * mile
     hoehe = float(first['Hoehe(m)'])
 
-    dprint("groundspeed km/h:", groundspeed)
-    dprint("hoehe m:", hoehe)
+    logging.debug("groundspeed %f km/h:", groundspeed)
+    logging.debug("hoehe %f m:", hoehe)
 
     for p in lines:
         sec = float(p['Zeit(s)'])
@@ -164,13 +162,13 @@ def genczml(starttime, lines, gpx, vorlauf=720, nachlauf=720):
         kurs = get_course(p0.latitude, p0.longitude, p1.latitude, p1.longitude)
         dist = distance(p0.latitude, p0.longitude, None,
                         p1.latitude, p1.longitude, None)
-        dprint("Kurs: ", kurs)
+        logging.debug("Kurs: %f ", kurs)
         gegenkurs = (kurs + 180.0) % 360.0
-        dprint("Gegenkurs: ", gegenkurs)
-        dprint("Distanz: ", dist)
+        logging.debug("Gegenkurs: %f ", gegenkurs)
+        logging.debug("Distanz: %f", dist)
         m_s = dist / 180.0
         km_h = m_s * 3.6
-        dprint("vel km/h: ", km_h)
+        logging.debug("vel %f km/h: ", km_h)
 
         vorlauf_distanz = m_s * vorlauf
         nachlauf_distanz = m_s * nachlauf
@@ -187,7 +185,7 @@ def genczml(starttime, lines, gpx, vorlauf=720, nachlauf=720):
         nachlauf_loc = t0 + nachlauf_locdelta
         vorlauf_zeit = starttime - timedelta(seconds=vorlauf)
         nachlauf_zeit = starttime + timedelta(seconds=nachlauf)
-        dprint("vor+nachlauf: ", vorlauf_loc, nachlauf_loc)
+        logging.debug("vorlauf %s nachlauf %s: ", vorlauf_loc, nachlauf_loc)
 
         flight_traj = [
             0,
@@ -233,7 +231,7 @@ def genczml(starttime, lines, gpx, vorlauf=720, nachlauf=720):
         route = gpx.routes[0]
         posn = []
         for rp in route.points:
-            dprint(rp)
+            logging.debug(rp)
             posn.extend([rp.longitude, rp.latitude, 100.0])
 
         sc = SolidColorMaterial(color=gelb)
@@ -267,6 +265,8 @@ def genczml(starttime, lines, gpx, vorlauf=720, nachlauf=720):
                          minimumPixelSize=64)
     #jump_viewfrom = ViewFrom(cartesian=Cartesian3Value(values=[0, -200, 100]))
     jump_viewfrom = ViewFrom(reference="#track0.position")
+    jump_orientation = Orientation(velocityReference="#position")
+
     jump = Packet(id="track%d" % next(_serial),
                     description="der Sprung",
                     name="Karli",
@@ -275,6 +275,7 @@ def genczml(starttime, lines, gpx, vorlauf=720, nachlauf=720):
                     path=jump_path,
                     model=jump_vehicle,
                     viewFrom=jump_viewfrom,
+            #        orientation=jump_orientation,
                     availability=TimeInterval(
                        start=starttime,
                        end=starttime + sprungdauer))
@@ -289,9 +290,23 @@ def main():
                                      'optionally a gpx file')
     parser.add_argument('-d', '--debug', action='store_true',
                         help='show detailed logging')
+    parser.add_argument('-n', '--netcdf', type=str,
+                help='netCDF file containing windfield data')
+
+    parser.add_argument('-g', '--gpx', type=str,
+                help='GPX file containing essential markers')
+
     args, files = parser.parse_known_args()
+
     global debug
     debug = args.debug
+
+    logging_level = logging.DEBUG if debug else logging.INFO
+    logging.basicConfig(stream=sys.stderr, level=logging_level,
+format='%(filename)s:%(lineno)d:%(levelname)s %(message)s',
+
+                        )
+    logging.debug(args)
 
     with open(files[0], 'r') as csv_file:
         lines = []
@@ -300,9 +315,11 @@ def main():
             lines.append(row)
 
     gpx = None
-    if len(files) > 1:
-        with open(files[1], 'r') as gpx_file:
+    if args.gpx:
+        with open(args.gpx, 'r') as gpx_file:
             gpx = gpxpy.parse(gpx_file)
+        bounds = util.get_bounds(gpx.waypoints)
+        logging.debug("gpx bbox: %s", bounds)
 
     absprungzeitpunkt = datetime(2020, 7, 12, hour=8)
     genczml(absprungzeitpunkt, lines, gpx, vorlauf=190, nachlauf=720)
